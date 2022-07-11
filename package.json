@@ -1,0 +1,32 @@
+{
+  "name": "books-shop-",
+  "version": "1.0.0",
+  "description": "A app made to practice NodeJS.  2 data models one for an author with fields (id, name, email, phone_no) and books with fields (id, title, likes, author) as mandatory fields. Need to implement the user authentication for the authors. Some CRUD Apis for both data models but the APIs of the books model will be accessible to logged-in/ authenticated users only.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VaibhavPaliwal0007/Books-Shop-.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VaibhavPaliwal0007/Books-Shop-/issues"
+  },
+  "homepage": "https://github.com/VaibhavPaliwal0007/Books-Shop-#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.4.4",
+    "validator": "^13.7.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.1",
+    "nodemon": "^2.0.19"
+  }
+}
