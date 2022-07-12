@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 
+const Book = require('./Book');
+
 const authorSchema = mongoose.Schema(
     {
         name: {
@@ -27,10 +29,7 @@ const authorSchema = mongoose.Schema(
             minlength: 7,
             trim: true,
             validate(value) {
-                if (
-                    value.toLowerCase().includes("123") ||
-                    value.toLowerCase().includes("0000")
-                ) {
+                if (value.toLowerCase().includes("123") || value.toLowerCase().includes("0000")) {
                     throw new Error("Please enter a strong password!!");
                 }
             },
@@ -41,6 +40,11 @@ const authorSchema = mongoose.Schema(
             required: true,
             trim: true,
             minlength: 10,
+        },
+
+        isLike: {
+            type: Boolean,
+            default: false,
         },
 
         tokens: [
@@ -54,6 +58,12 @@ const authorSchema = mongoose.Schema(
     },
     { timestamps: true }
 );
+
+authorSchema.virtual('books', {
+    ref: 'Book',
+    localField: "_id",
+    foreignField: "author",
+});
 
 const Author = mongoose.model("Author", authorSchema);
 

@@ -10,10 +10,11 @@ const bookSchema = new mongoose.Schema({
     likes: {
         type: Number,
         default: 0,
+        required: true,
     },
 
     author: {
-        type: string,
+        type: String,
         required: true,
         trim: true,
     }
