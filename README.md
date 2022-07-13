@@ -35,5 +35,7 @@ PORT=3000
 MONGODB_URL=mongodb://127.0.0.1:27017/books
 JWT_SECRET=PetPerfect
 
+- run the database in your local machine using  mongod --dbpath=/opt/homebrew/var/mongodb. Not sure about the windows. 
+
 
 
