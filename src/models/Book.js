@@ -13,10 +13,10 @@ const bookSchema = new mongoose.Schema({
         required: true,
     },
 
-    author: {
-        type: String,
-        required: true,
-        trim: true,
+    author : {
+        type : mongoose.Schema.Types.ObjectId,
+        required : true,
+        ref : 'Author'
     }
 }, { timestamps: true });
 

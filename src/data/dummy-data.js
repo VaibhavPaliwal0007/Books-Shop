@@ -34,7 +34,7 @@ async function createDummyData() {
                 const book = new Book({
                     title: bookName,
                     likes,
-                    author: name,
+                    author: author._id,
                 });
 
                 await book.save();
@@ -43,8 +43,6 @@ async function createDummyData() {
     } catch (err) {
         console.log(err);
     }
-}
-
-createDummyData();
+};
 
 module.exports = createDummyData;

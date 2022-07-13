@@ -3,6 +3,8 @@ const validator = require("validator");
 
 const Book = require('./Book');
 
+const jwt = require('jsonwebtoken')
+
 const authorSchema = mongoose.Schema(
     {
         name: {
@@ -51,19 +53,50 @@ const authorSchema = mongoose.Schema(
             {
                 token: {
                     type: String,
-                    required: true,
+                    required: false,
                 },
             },
         ],
+
+        books: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Book',
+        }],
     },
     { timestamps: true }
 );
 
-authorSchema.virtual('books', {
-    ref: 'Book',
-    localField: "_id",
-    foreignField: "author",
-});
+// authorSchema.virtual('books', {
+//     ref: 'Book',
+//     localField: "_id",
+//     foreignField: "author",
+// });
+
+authorSchema.methods.generateAuthToken = async function() {
+    const author = this;
+
+    const token = jwt.sign({ _id: author._id.toString() }, process.env.JWT_SECRET);
+
+    author.tokens = author.tokens.concat({ token });
+    await author.save();
+
+    return token;
+};
+
+authorSchema.statics.findByCredentials = async function(email, password) {
+     const author = await Author.findOne({ email });
+
+     if(!author) {
+         throw new Error("Unable to login");
+     }
+
+     if(author.password !== password) {
+         throw new Error("Unable to login");
+     }
+
+     return author;
+};
+
 
 const Author = mongoose.model("Author", authorSchema);
 
