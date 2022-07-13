@@ -25,8 +25,6 @@ async function createDummyData() {
                 phoneNo,
             });
 
-            await author.save();
-
             for (let j = 0; j < 10; j++) {
                 const bookName = faker.lorem.sentence();
                 const likes = faker.datatype.number({ min: 10, max: 100 });
@@ -38,6 +36,8 @@ async function createDummyData() {
                 });
 
                 await book.save();
+                author.books.push(book._id);
+                await author.save();
             }
         }
     } catch (err) {
