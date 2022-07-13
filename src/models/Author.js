@@ -1,77 +1,75 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const bcrypt = require("bcrypt");
 
-const Book = require("./Book");
+require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
 
-const authorSchema = mongoose.Schema(
-    {
-        name: {
-            type: String,
-            required: true,
-            trim: true,
-        },
-
-        email: {
-            type: String,
-            unique: true,
-            required: true,
-            trim: true,
-            validate(value) {
-                if (!validator.isEmail(value)) {
-                    throw new Error("Email is invalid");
-                }
-            },
-        },
-
-        password: {
-            type: String,
-            required: true,
-            minlength: 7,
-            trim: true,
-            validate(value) {
-                if (
-                    value.toLowerCase().includes("123") ||
-                    value.toLowerCase().includes("0000")
-                ) {
-                    throw new Error("Please enter a strong password!!");
-                }
-            },
-        },
-
-        phoneNo: {
-            type: String,
-            required: true,
-            trim: true,
-            minlength: 10,
-        },
-
-        likedBooks: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Book",
-            },
-        ],
-
-        tokens: [
-            {
-                token: {
-                    type: String,
-                    required: false,
-                },
-            },
-        ],
-
-        books: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Book",
-            },
-        ],
+const authorSchema = mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true,
     },
-    { timestamps: true }
-);
+
+    email: {
+        type: String,
+        unique: true,
+        required: true,
+        trim: true,
+        validate(value) {
+            if (!validator.isEmail(value)) {
+                throw new Error("Email is invalid");
+            }
+        },
+    },
+
+    password: {
+        type: String,
+        required: true,
+        minlength: 7,
+        trim: true,
+        validate(value) {
+            if (
+                value.toLowerCase().includes("123") ||
+                value.toLowerCase().includes("0000")
+            ) {
+                throw new Error("Please enter a strong password!!");
+            }
+        },
+    },
+
+    phoneNo: {
+        type: String,
+        required: true,
+        trim: true,
+        minlength: 10,
+    },
+
+    likedBooks: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Book",
+        },
+    ],
+
+    tokens: [
+        {
+            token: {
+                type: String,
+                required: false,
+            },
+        },
+    ],
+
+    books: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Book",
+        },
+    ],
+});
 
 // authorSchema.virtual('books', {
 //     ref: 'Book',
@@ -81,14 +79,13 @@ const authorSchema = mongoose.Schema(
 
 authorSchema.methods.toJSON = function (flag) {
     const author = this;
-
     const authorObject = author.toObject();
 
     delete authorObject.password;
     delete authorObject.tokens;
 
-    if (flag){
-         delete authorObject.books;
+    if (flag) {
+        delete authorObject.books;
     }
 
     return authorObject;
@@ -115,12 +112,24 @@ authorSchema.statics.findByCredentials = async function (email, password) {
         throw new Error("Unable to login");
     }
 
-    if (author.password !== password) {
+    const isMatch = await bcrypt.compare(password, author.password);
+
+    if (!isMatch) {
         throw new Error("Unable to login");
     }
 
     return author;
 };
+
+authorSchema.pre("save", async function (next) {
+    const author = this;
+
+    if (author.isModified("password")) {
+        author.password = await bcrypt.hash(author.password, 8);
+    }
+
+    next();
+});
 
 const Author = mongoose.model("Author", authorSchema);
 

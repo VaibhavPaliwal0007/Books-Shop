@@ -1,10 +1,14 @@
 const express = require('express');
 
-const routerLogin = new express.Router();
+const authenticateRoute = new express.Router();
 
-const { login } = require('../controllers/authentication');
+const auth = require('../middleware/auth');
+const { login, logout, updateCredentials, signup } = require('../controllers/authentication');
 
-routerLogin.post("/api/v1/login", login);
+authenticateRoute.post("/login", login);
+authenticateRoute.post("/logout", auth, logout);
+authenticateRoute.patch("/update-credentials", auth, updateCredentials);
+authenticateRoute.post("/signup", signup);
 
-module.exports = routerLogin;
+module.exports = authenticateRoute;
 

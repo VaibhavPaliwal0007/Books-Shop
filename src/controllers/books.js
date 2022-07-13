@@ -5,16 +5,23 @@ const getAllBooks = async (req, res) => {
     try {
         const books = await await Book.find().populate({
             path: "author",
-            select: { name: 1, _id: 0 },
+            select: { name: 1, _id: 1, likes: 1 },
         });
 
-        if (req.query.sortByLikes == "desc") {
+        if (req.query.sortbylikes == "desc") {
             books.sort((a, b) => b.likes - a.likes);
-        } else if (req.query.sortByLikes == "asc") {
+        } else if (req.query.sortbylikes == "asc") {
             books.sort((a, b) => a.likes - b.likes);
         }
 
-        res.status(200).send(books);
+        const page = req.query.page || 1;
+        const perPage = 10;
+        const start = (page - 1) * perPage;
+        const end = page * perPage;
+
+        const modifiedBooks = arr.slice(start, end);
+
+        res.status(200).send(modifiedBooks);
     } catch (e) {
         res.status(400).send(e);
         console.log(e);
@@ -27,7 +34,7 @@ const getBooks = async (req, res) => {
         const arr = [];
 
         for (let idx = 0; idx < authors.length; idx++) {
-            await authors[idx].populate("books", { _id: 0, __v: 0 });
+            await authors[idx].populate("books", { _id: 1, __v: 0 });
 
             const authorBooks = authors[idx].books;
 
@@ -40,13 +47,20 @@ const getBooks = async (req, res) => {
             arr.push(...authorBooks);
         }
 
-        if (req.query.sortByLikes == "desc") {
+        if (req.query.sortbylikes == "desc") {
             arr.sort((a, b) => b.likes - a.likes);
-        } else if (req.query.sortByLikes == "asc") {
+        } else if (req.query.sortbylikes == "asc") {
             arr.sort((a, b) => a.likes - b.likes);
         }
 
-        res.status(200).send(arr);
+        const page = req.query.page || 1;
+        const perPage = 10;
+        const start = (page - 1) * perPage;
+        const end = page * perPage;
+
+        const books = arr.slice(start, end);
+
+        res.status(200).send(books);
     } catch (e) {
         res.status(400).send(e);
         console.log(e);

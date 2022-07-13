@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const bookSchema = new mongoose.Schema({
     title: {
@@ -13,12 +13,12 @@ const bookSchema = new mongoose.Schema({
         required: true,
     },
 
-    author : {
-        type : mongoose.Schema.Types.ObjectId,
-        required : true,
-        ref : 'Author'
-    }
-}, { timestamps: true });
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "Author",
+    },
+});
 
 // bookSchema.methods.toDisplay = function (flag) {
 //     const book = this;
@@ -31,6 +31,6 @@ const bookSchema = new mongoose.Schema({
 //     return bookObject;
 // };
 
-const Book = mongoose.model('Book', bookSchema);
+const Book = mongoose.model("Book", bookSchema);
 
 module.exports = Book;
