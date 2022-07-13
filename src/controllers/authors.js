@@ -43,7 +43,7 @@ const getAuthorById = async (req, res) => {
             },
             {
                 path: "books",
-                select: { title: 1, author: 1, likes: 1, _id: 0 },
+                select: { title: 1, likes: 1, _id: 0 },
             },
         ]);
 

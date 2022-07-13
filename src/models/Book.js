@@ -20,14 +20,16 @@ const bookSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-bookSchema.methods.toJSON = function () {
-    const book = this;
-    const bookObject = book.toObject();
+// bookSchema.methods.toDisplay = function (flag) {
+//     const book = this;
+//     const bookObject = book.toObject();
 
-    delete bookObject.author;
+//     if(flag){
+//         delete bookObject.author;
+//     }
 
-    return bookObject;
-}
+//     return bookObject;
+// };
 
 const Book = mongoose.model('Book', bookSchema);
 

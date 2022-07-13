@@ -3,7 +3,16 @@ const Author = require("../models/Author");
 
 const getAllBooks = async (req, res) => {
     try {
-        const books = await await Book.find().populate("author");
+        const books = await await Book.find().populate({
+            path: "author",
+            select: { name: 1, _id: 0 },
+        });
+
+        if (req.query.sortByLikes == "desc") {
+            books.sort((a, b) => b.likes - a.likes);
+        } else if (req.query.sortByLikes == "asc") {
+            books.sort((a, b) => a.likes - b.likes);
+        }
 
         res.status(200).send(books);
     } catch (e) {
@@ -18,13 +27,23 @@ const getBooks = async (req, res) => {
         const arr = [];
 
         for (let idx = 0; idx < authors.length; idx++) {
-            const authorName = authors[idx].name;
-
-            await authors[idx].populate("books", {'author': 0, '_id': 0, '__v': 0});
+            await authors[idx].populate("books", { _id: 0, __v: 0 });
 
             const authorBooks = authors[idx].books;
 
-            arr.push({ authorName, authorBooks });
+            for (let curr = 0; curr < authorBooks.length; curr++) {
+                await authorBooks[curr].populate({
+                    path: "author",
+                    select: { name: 1, _id: 0 },
+                });
+            }
+            arr.push(...authorBooks);
+        }
+
+        if (req.query.sortByLikes == "desc") {
+            books.sort((a, b) => b.likes - a.likes);
+        } else if (req.query.sortByLikes == "asc") {
+            books.sort((a, b) => a.likes - b.likes);
         }
 
         res.status(200).send(arr);
