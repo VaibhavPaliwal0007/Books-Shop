@@ -20,6 +20,15 @@ const bookSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+bookSchema.methods.toJSON = function () {
+    const book = this;
+    const bookObject = book.toObject();
+
+    delete bookObject.author;
+
+    return bookObject;
+}
+
 const Book = mongoose.model('Book', bookSchema);
 
 module.exports = Book;
