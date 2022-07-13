@@ -1,9 +1,12 @@
 const express = require('express');
-const getAllBooksRouter = new express.Router();
+const booksRouter = new express.Router();
 
 const auth = require('../middleware/auth');
-const getBooks = require('../controllers/books');
+const { getAllBooks, likeBook, unlikeBook, getBooks } = require('../controllers/books');
 
-getAllBooksRouter.get('/api/v1/books/all', auth, getBooks);
+booksRouter.get('/all', auth, getAllBooks);
+booksRouter.put('/like/:id', auth, likeBook);
+booksRouter.put('/unlike/:id', auth, unlikeBook);
+booksRouter.get('/', auth, getBooks);
 
-module.exports = getAllBooksRouter;
+module.exports = booksRouter;

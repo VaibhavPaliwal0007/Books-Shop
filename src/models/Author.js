@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 
-const Book = require('./Book');
+const Book = require("./Book");
 
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
 const authorSchema = mongoose.Schema(
     {
@@ -31,7 +31,10 @@ const authorSchema = mongoose.Schema(
             minlength: 7,
             trim: true,
             validate(value) {
-                if (value.toLowerCase().includes("123") || value.toLowerCase().includes("0000")) {
+                if (
+                    value.toLowerCase().includes("123") ||
+                    value.toLowerCase().includes("0000")
+                ) {
                     throw new Error("Please enter a strong password!!");
                 }
             },
@@ -44,10 +47,12 @@ const authorSchema = mongoose.Schema(
             minlength: 10,
         },
 
-        likedBooks: [{
-             type: String,
-             required: false
-        }],
+        likedBooks: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Book",
+            },
+        ],
 
         tokens: [
             {
@@ -58,10 +63,12 @@ const authorSchema = mongoose.Schema(
             },
         ],
 
-        books: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Book',
-        }],
+        books: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Book",
+            },
+        ],
     },
     { timestamps: true }
 );
@@ -72,10 +79,28 @@ const authorSchema = mongoose.Schema(
 //     foreignField: "author",
 // });
 
-authorSchema.methods.generateAuthToken = async function() {
+authorSchema.methods.toJSON = function (flag) {
     const author = this;
 
-    const token = jwt.sign({ _id: author._id.toString() }, process.env.JWT_SECRET);
+    const authorObject = author.toObject();
+
+    delete authorObject.password;
+    delete authorObject.tokens;
+
+    if (flag){
+         delete authorObject.books;
+    }
+
+    return authorObject;
+};
+
+authorSchema.methods.generateAuthToken = async function () {
+    const author = this;
+
+    const token = jwt.sign(
+        { _id: author._id.toString() },
+        process.env.JWT_SECRET
+    );
 
     author.tokens = author.tokens.concat({ token });
     await author.save();
@@ -83,20 +108,19 @@ authorSchema.methods.generateAuthToken = async function() {
     return token;
 };
 
-authorSchema.statics.findByCredentials = async function(email, password) {
-     const author = await Author.findOne({ email });
+authorSchema.statics.findByCredentials = async function (email, password) {
+    const author = await Author.findOne({ email });
 
-     if(!author) {
-         throw new Error("Unable to login");
-     }
+    if (!author) {
+        throw new Error("Unable to login");
+    }
 
-     if(author.password !== password) {
-         throw new Error("Unable to login");
-     }
+    if (author.password !== password) {
+        throw new Error("Unable to login");
+    }
 
-     return author;
+    return author;
 };
-
 
 const Author = mongoose.model("Author", authorSchema);
 
