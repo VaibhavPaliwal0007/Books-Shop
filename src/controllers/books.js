@@ -41,9 +41,9 @@ const getBooks = async (req, res) => {
         }
 
         if (req.query.sortByLikes == "desc") {
-            books.sort((a, b) => b.likes - a.likes);
+            arr.sort((a, b) => b.likes - a.likes);
         } else if (req.query.sortByLikes == "asc") {
-            books.sort((a, b) => a.likes - b.likes);
+            arr.sort((a, b) => a.likes - b.likes);
         }
 
         res.status(200).send(arr);
