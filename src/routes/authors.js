@@ -1,15 +1,26 @@
 const express = require("express");
 
-const getAuthorByIdRouter = new express.Router();
-const getAuthorsRouter = new express.Router();
-const getAuthorRouter = new express.Router();
+const authorsRoute = new express.Router();
 
-const { getAuthorById, getAuthors, getAuthor } = require("../controllers/authors");
+// const getAuthorByIdRouter = new express.Router();
+// const getAuthorsRouter = new express.Router();
+// const getAuthorRouter = new express.Router();
+// const getBooksRouter = new express.Router();
+
+const { getAuthorById, getAuthors, getAuthor, getAllBooks } = require("../controllers/authors");
 const auth = require("../middleware/auth");
 
-getAuthorsRouter.get("/api/v1/authors", auth, getAuthors);
-getAuthorRouter.get("/api/v1/authors/me", auth, getAuthor);
-getAuthorByIdRouter.get("/api/v1/authors/:id", auth, getAuthorById);
+// getAuthorsRouter.get("/authors", auth, getAuthors);
+// getAuthorRouter.get("/authors/me", auth, getAuthor);
+// getAuthorByIdRouter.get("/authors/:id", auth, getAuthorById);
+// getBooksRouter.get("/books/", auth, getAllBooks);
 
-module.exports = { getAuthorByIdRouter, getAuthorsRouter, getAuthorRouter };
+authorsRoute.get("/authors", auth, getAuthors);
+authorsRoute.get("/authors/me", auth, getAuthor);
+authorsRoute.get("/authors/:id", auth, getAuthorById);
+authorsRoute.get("/books/", auth, getAllBooks);
+
+
+// module.exports = { getAuthorByIdRouter, getAuthorsRouter, getAuthorRouter, getBooksRouter };
+module.exports = authorsRoute;
  

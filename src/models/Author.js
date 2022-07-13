@@ -44,10 +44,10 @@ const authorSchema = mongoose.Schema(
             minlength: 10,
         },
 
-        isLike: {
-            type: Boolean,
-            default: false,
-        },
+        likedBooks: [{
+             type: String,
+             required: false
+        }],
 
         tokens: [
             {
